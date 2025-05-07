@@ -1,4 +1,4 @@
-package com.Subasta_Online.Subasta_service.Model;
+package com.Subasta_Online.Subasta_puja.Model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,17 +9,17 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Entity( name = "Subasta_Iniciada")
+@Entity
 @Getter
 @Setter
-public class IniciarSubasta {
+public class Puja {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
     private float precioInicial;
-    private LocalDateTime hora = LocalDateTime.now();
+    private LocalDateTime hora;
     private EstadoSubasta estadoSubasta;
 
 }

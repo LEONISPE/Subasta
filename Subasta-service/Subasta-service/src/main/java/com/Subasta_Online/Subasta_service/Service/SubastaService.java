@@ -14,9 +14,10 @@ public class SubastaService {
 
     public DTOiniciarSubasta iniciarSubasta(DTOiniciarSubasta dtOiniciarSubasta) {
         IniciarSubasta iniciarSubasta = new IniciarSubasta();
-        iniciarSubasta.setId(dtOiniciarSubasta.getId());
         iniciarSubasta.setNombre(dtOiniciarSubasta.getNombre());
         iniciarSubasta.setPrecioInicial(dtOiniciarSubasta.getPrecioInicial());
+        iniciarSubasta.setHora(dtOiniciarSubasta.getHora());
+        iniciarSubasta.setEstadoSubasta(dtOiniciarSubasta.getEstadoSubasta());
         subastaRepository.save(iniciarSubasta);
         return dtOiniciarSubasta;
     }
