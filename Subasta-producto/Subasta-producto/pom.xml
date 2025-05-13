@@ -8,10 +8,10 @@
 		<groupId>com.Subasta-Online</groupId>
 		<artifactId>Subasta</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../../pom.xml</relativePath> <!-- Ruta al padre -->
 	</parent>
 
 	<artifactId>subasta-producto</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>Subasta producto</name>
 	<description>Microservicio de subasta-producto</description>
 
@@ -45,6 +45,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

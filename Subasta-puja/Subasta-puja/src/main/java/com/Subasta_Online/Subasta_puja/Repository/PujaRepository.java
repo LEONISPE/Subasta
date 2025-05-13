@@ -7,9 +7,8 @@ import java.util.List;
 
 public interface PujaRepository  extends JpaRepository<Puja, Long> {
 
-    List<Puja> findByPujaName(String pujaName);
+    List<Puja> findByNombre(String nombre);
 
     List<Puja> findByPrecioInicial(float precioInicial);
 
-    List<Puja> findByPrecioFinalandName(float precioFinal, String pujaName);
 }
