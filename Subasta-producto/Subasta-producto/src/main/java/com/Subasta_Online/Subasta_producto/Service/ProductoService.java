@@ -21,25 +21,21 @@ private final ProductoRepository productoRepository;
       Producto productonew  = new Producto();
       productonew.setNombre(dtOaddProducto.getNombre());
       productonew.setDescripcion(dtOaddProducto.getDescripcion());
-      productonew.setEstado(dtOaddProducto.getEstado());
-      productonew.setPrecioInicial(dtOaddProducto.getPrecioInicial());
-      productonew.setActivo(dtOaddProducto.isActivo());
-
+      productonew.setEstadoProducto(dtOaddProducto.getEstadoProducto());
     productoRepository.save(productonew);
     return  dtOaddProducto;
 
 
   }
 
-public List<DTOmostrarProducto> getAllProductosActivos() {
-    return productoRepository.findByActivo()
+public List<DTOmostrarProducto> getAllProductos() {
+    return productoRepository.findAll()
             .stream()
             .map(Producto -> new DTOmostrarProducto(
                     Producto.getNombre(),
                     Producto.getDescripcion(),
-                    Producto.getEstado(),
-                    Producto.getPrecioInicial()
-
+                    Producto.getEstadoProducto(),
+                    Producto.getCategoria()
             )) .toList();
 
 

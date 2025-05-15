@@ -15,7 +15,6 @@ public class Producto {
     private String id;
     private String nombre;
     private String descripcion;
-    private Boolean estado;
-    private float precioInicial;
-    private boolean activo= true;
+    private EstadoProducto estadoProducto;
+    private Categoria categoria;
 }

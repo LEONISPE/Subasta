@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,7 +15,11 @@ import java.time.LocalDateTime;
 public class DTOpuja {
 
     private String nombre;
+    private Categoria categoria;
+    private String descripcion;
     private float precioInicial;
-    private LocalDateTime hora;
+    private LocalDateTime HoraInicio;
     private EstadoSubasta estadoSubasta;
+    private EstadoProducto estadoProducto;
+    private LocalDate DuracionSubasta;
 }

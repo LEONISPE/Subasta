@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity( name = "Subasta_Iniciada")
@@ -18,8 +19,11 @@ public class IniciarSubasta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
+    private Categoria categoria;
+    private String descripcion;
     private float precioInicial;
-    private LocalDateTime hora = LocalDateTime.now();
-    private EstadoSubasta estadoSubasta;
+    private LocalDateTime horaInicio = LocalDateTime.now();
+    private EstadoProducto estadoProducto;
+    private LocalDate DuracionSubasta;
 
 }

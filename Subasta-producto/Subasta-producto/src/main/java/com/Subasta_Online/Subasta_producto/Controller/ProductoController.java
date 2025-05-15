@@ -1,0 +1,35 @@
+package com.Subasta_Online.Subasta_producto.Controller;
+
+import com.Subasta_Online.Subasta_producto.Model.DTOaddProducto;
+import com.Subasta_Online.Subasta_producto.Model.DTOmostrarProducto;
+import com.Subasta_Online.Subasta_producto.Model.Producto;
+import com.Subasta_Online.Subasta_producto.Service.ProductoService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/producto")
+public class ProductoController {
+
+    private final ProductoService productoService;
+
+
+    public ProductoController(ProductoService productoService) {
+        this.productoService = productoService;
+    }
+
+    @PostMapping("/guardar")
+    public ResponseEntity<DTOaddProducto> guardarProducto(@RequestBody DTOaddProducto dtOaddProducto) {
+        productoService.addProducto(dtOaddProducto);
+       return ResponseEntity.ok().body(dtOaddProducto);
+    }
+
+
+    @GetMapping("/mostrar")
+    public ResponseEntity<List<DTOmostrarProducto>> mostrarProducto() {
+        productoService.getAllProductos();
+        return ResponseEntity.ok().body(productoService.getAllProductos());
+    }
+}

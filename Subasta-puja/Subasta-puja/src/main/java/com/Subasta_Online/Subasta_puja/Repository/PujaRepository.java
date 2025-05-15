@@ -1,5 +1,6 @@
 package com.Subasta_Online.Subasta_puja.Repository;
 
+import com.Subasta_Online.Subasta_puja.Model.Categoria;
 import com.Subasta_Online.Subasta_puja.Model.Puja;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,5 +11,7 @@ public interface PujaRepository  extends JpaRepository<Puja, Long> {
     List<Puja> findByNombre(String nombre);
 
     List<Puja> findByPrecioInicial(float precioInicial);
+
+    List<Puja> findByCategoria(Categoria categoria);
 
 }

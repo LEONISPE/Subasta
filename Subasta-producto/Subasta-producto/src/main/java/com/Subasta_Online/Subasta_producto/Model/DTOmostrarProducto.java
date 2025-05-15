@@ -13,6 +13,7 @@ public class DTOmostrarProducto {
 
     private String nombre;
     private String descripcion;
-    private Boolean estado;
-    private float precioInicial;
+    private EstadoProducto estadoProducto;
+    private Categoria categoria;
+
 }

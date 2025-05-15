@@ -1,4 +1,4 @@
-package com.Subasta_Online.Subasta_service.Model;
+package com.Subasta_Online.Subasta_puja.Model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
