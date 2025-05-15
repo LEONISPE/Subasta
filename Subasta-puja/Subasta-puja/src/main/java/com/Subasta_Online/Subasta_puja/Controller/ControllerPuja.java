@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/pujas")
+@RequestMapping("/api")
 public class ControllerPuja {
 
     private final PujaService pujaService;
@@ -17,9 +19,10 @@ public class ControllerPuja {
         this.pujaService = pujaService;
     }
 
-    @GetMapping
-    public ResponseEntity<DTOpuja> mostrarPujas() {
-        pujaService.mostrarPujas();
-        return ResponseEntity.ok().body(new DTOpuja());
+    @GetMapping("/pujas")
+    public ResponseEntity<List<DTOpuja>> mostrarPujas() {
+        List<DTOpuja> pujas = pujaService.mostrarPujas();
+        return ResponseEntity.ok(pujas);
     }
+
 }

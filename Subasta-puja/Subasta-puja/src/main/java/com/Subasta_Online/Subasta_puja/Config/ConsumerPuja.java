@@ -20,6 +20,6 @@ public class ConsumerPuja {
             containerFactory = "pujaListenerContainerFactory"
     )
     public void consumirPuja(DTOiniciarSubasta dtOiniciarSubasta) {
-   pujaService.guardarPuja(dtOiniciarSubasta);
+   pujaService.guardarPujaDesdeSubastaIniciada(dtOiniciarSubasta);
     }
 }

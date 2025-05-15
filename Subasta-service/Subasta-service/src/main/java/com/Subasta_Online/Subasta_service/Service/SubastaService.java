@@ -7,6 +7,8 @@ import com.Subasta_Online.Subasta_service.Repository.SubastaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @AllArgsConstructor
 public class SubastaService {
@@ -20,11 +22,17 @@ public class SubastaService {
         iniciarSubasta.setCategoria(dtOiniciarSubasta.getCategoria());
         iniciarSubasta.setDescripcion(dtOiniciarSubasta.getDescripcion());
         iniciarSubasta.setPrecioInicial(dtOiniciarSubasta.getPrecioInicial());
-        iniciarSubasta.setHoraInicio(dtOiniciarSubasta.getHoraInicio());
         iniciarSubasta.setEstadoProducto(dtOiniciarSubasta.getEstadoProducto());
         iniciarSubasta.setDuracionSubasta(dtOiniciarSubasta.getDuracionSubasta());
+
+        // Establecer hora de inicio actual tanto en la entidad como en el DTO
+        LocalDateTime ahora = LocalDateTime.now();
+        iniciarSubasta.setHoraInicio(ahora);
+        dtOiniciarSubasta.setHoraInicio(ahora);
+
         subastaRepository.save(iniciarSubasta);
         subastaProducer.sendMessaguePuja(dtOiniciarSubasta);
+
         return dtOiniciarSubasta;
     }
 

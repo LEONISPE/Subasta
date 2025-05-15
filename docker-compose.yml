@@ -52,17 +52,16 @@ services:
 
  ### MongoDB para Subasta-producto
   mongo-product:
-      container_name: mongo-product
-      image: mongo:6.0
-      restart: unless-stopped
-      environment:
-        MONGO_INITDB_DATABASE: DBProducto
-        MONGO_INITDB_ROOT_USERNAME: leonispe
-        MONGO_INITDB_ROOT_PASSWORD: 1234
-      ports:
-        - 27018:27017
-      expose:
-        - 27017
+    image: mongo:6.0
+    container_name: mongo-product
+    restart: unless-stopped
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpass
+    volumes:
+      - ./mongo-init:/docker-entrypoint-initdb.d
 
 
   ### Zookeeper

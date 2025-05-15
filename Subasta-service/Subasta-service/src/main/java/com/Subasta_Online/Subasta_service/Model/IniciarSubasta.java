@@ -4,15 +4,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity( name = "Subasta_Iniciada")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class IniciarSubasta {
 
     @Id
@@ -24,6 +28,7 @@ public class IniciarSubasta {
     private float precioInicial;
     private LocalDateTime horaInicio = LocalDateTime.now();
     private EstadoProducto estadoProducto;
-    private LocalDate DuracionSubasta;
+    private Duration duracionSubasta;
+
 
 }

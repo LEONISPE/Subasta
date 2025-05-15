@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/iniciar")
+@RequestMapping("/api")
 @RestController
 public class SubastaServiceController {
 
@@ -19,7 +19,7 @@ public class SubastaServiceController {
     }
 
 
-    @PostMapping
+    @PostMapping("/iniciar")
     public ResponseEntity<DTOiniciarSubasta> iniciarSubasta(@RequestBody DTOiniciarSubasta DTOiniciarSubasta) {
         subastaService.iniciarSubasta(DTOiniciarSubasta);
         return ResponseEntity.ok().body(DTOiniciarSubasta);
