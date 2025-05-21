@@ -20,8 +20,8 @@ public class SubastaServiceController {
 
 
     @PostMapping("/iniciar")
-    public ResponseEntity<DTOiniciarSubasta> iniciarSubasta(@RequestBody DTOiniciarSubasta DTOiniciarSubasta) {
-        subastaService.iniciarSubasta(DTOiniciarSubasta);
-        return ResponseEntity.ok().body(DTOiniciarSubasta);
+    public ResponseEntity<DTOiniciarSubasta> iniciarSubasta(@RequestBody DTOiniciarSubasta dto) {
+        subastaService.iniciarSubasta(dto);
+        return ResponseEntity.ok().body(dto);
     }
 }

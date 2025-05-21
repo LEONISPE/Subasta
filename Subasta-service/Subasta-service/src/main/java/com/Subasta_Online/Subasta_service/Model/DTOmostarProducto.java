@@ -1,16 +1,13 @@
-package com.Subasta_Online.Subasta_producto.Model;
+package com.Subasta_Online.Subasta_service.Model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class DTOaddProducto {
+public class DTOmostarProducto {
 
+    private String id;
     private String nombre;
     private String descripcion;
     private EstadoProducto estadoProducto;

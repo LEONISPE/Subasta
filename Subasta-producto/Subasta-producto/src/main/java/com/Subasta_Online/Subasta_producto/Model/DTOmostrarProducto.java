@@ -11,9 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DTOmostrarProducto {
 
+    private String id;
     private String nombre;
     private String descripcion;
     private EstadoProducto estadoProducto;
-    private Categoria categoria;
+     private Categoria categoria;
 
 }

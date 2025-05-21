@@ -32,4 +32,10 @@ public class ProductoController {
         productoService.getAllProductos();
         return ResponseEntity.ok().body(productoService.getAllProductos());
     }
+
+    @GetMapping("/mostrar/{id}")
+    public ResponseEntity<DTOmostrarProducto> mostrarProductoPorId(@PathVariable String id) {
+        DTOmostrarProducto producto = productoService.getProductoPorId(id);
+        return ResponseEntity.ok(producto);
+    }
 }
