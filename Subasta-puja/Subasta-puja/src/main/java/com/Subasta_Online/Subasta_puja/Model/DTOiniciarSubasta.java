@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DTOiniciarSubasta {
+    private String idProducto;
     private String nombre;
     private Categoria categoria;
     private String descripcion;

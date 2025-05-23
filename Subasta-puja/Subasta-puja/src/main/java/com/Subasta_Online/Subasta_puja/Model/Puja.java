@@ -19,6 +19,7 @@ public class Puja {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String idProducto;
     private String nombre;
     private Categoria categoria;
     private String descripcion;

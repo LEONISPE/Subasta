@@ -1,11 +1,10 @@
 package com.Subasta_Online.Subasta_puja.Controller;
 
 import com.Subasta_Online.Subasta_puja.Model.DTOpuja;
+import com.Subasta_Online.Subasta_puja.Model.DTOpujaID;
 import com.Subasta_Online.Subasta_puja.Service.PujaService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +22,12 @@ public class ControllerPuja {
     public ResponseEntity<List<DTOpuja>> mostrarPujas() {
         List<DTOpuja> pujas = pujaService.mostrarPujas();
         return ResponseEntity.ok(pujas);
+    }
+
+    @PostMapping("/pujas/verificar-subasta-activa")
+    public ResponseEntity<Boolean> verificarSubastaActiva(@RequestBody String idProducto) {
+        boolean estaActivo = pujaService.existeSubastaActiva(idProducto);
+        return ResponseEntity.ok(estaActivo);
     }
 
 }

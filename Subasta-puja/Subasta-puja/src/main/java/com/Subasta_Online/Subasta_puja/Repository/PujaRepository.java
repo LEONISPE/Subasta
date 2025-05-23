@@ -14,4 +14,6 @@ public interface PujaRepository  extends JpaRepository<Puja, Long> {
 
     List<Puja> findByCategoria(Categoria categoria);
 
+    List<Puja> findByIdProducto(String idProducto);
+
 }
