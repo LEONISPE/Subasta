@@ -5,6 +5,7 @@ import com.Subasta_Online.Subasta_puja.Repository.PujaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static com.Subasta_Online.Subasta_puja.Model.EstadoSubasta.ACTIVO;
@@ -30,7 +31,8 @@ public class PujaService {
                         Puja.getHoraInicio(),
                         Puja.getEstadoSubasta(),
                         Puja.getEstadoProducto(),
-                        Puja.getDuracionSubasta()
+                        Puja.getDuracionSubasta(),
+                        Puja.getPrecioActual()
                 )).toList();
     }
 
@@ -61,6 +63,7 @@ public class PujaService {
         puja.setDuracionSubasta(dtoiniciarSubasta.getDuracionSubasta());
         puja.setEstadoProducto(dtoiniciarSubasta.getEstadoProducto());
 
+        puja.setEstadoSubasta(EstadoSubasta.ACTIVO);
         pujaRepository.save(puja);
     }
 
@@ -68,5 +71,32 @@ public class PujaService {
         return pujaRepository.findByIdProducto(idProducto)
                 .stream()
                 .anyMatch(puja -> puja.getEstadoSubasta().equals(EstadoSubasta.ACTIVO));
+    }
+
+    public DTOApuntarsePuja apuntarsePuja(String idProducto, BigDecimal nuevoPrecio) {
+        Puja puja = pujaRepository.findByIdProducto(idProducto)
+                .orElseThrow(() -> new IllegalArgumentException("❌ El producto no está en subasta"));
+
+        // Validar si el nuevo precio es mayor al actual
+        BigDecimal precioBase = puja.getPrecioActual();
+
+        if (precioBase == null || precioBase.compareTo(puja.getPrecioInicial()) == 0) {
+            // nadie ha pujado aún → usamos el precio inicial como base
+            precioBase = puja.getPrecioInicial();
+        }
+
+// Si el nuevo precio es menor o igual al precio base, rechazar
+        if (nuevoPrecio.compareTo(precioBase) <= 0) {
+            throw new IllegalArgumentException("❌ El precio ofrecido debe ser mayor al precio actual o inicial");
+        }
+
+        // Actualizar el precio actual con el nuevo precio
+        puja.setPrecioActual(nuevoPrecio);
+        pujaRepository.save(puja);
+
+        System.out.println("✅ Usted se apuntó a la puja con éxito");
+
+        // Retornar DTO actualizado
+        return new DTOApuntarsePuja(puja.getIdProducto(), puja.getPrecioActual());
     }
 }

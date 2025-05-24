@@ -8,6 +8,7 @@ import com.Subasta_Online.Subasta_service.Model.DTOpujaID;
 import com.Subasta_Online.Subasta_service.Model.IniciarSubasta;
 import com.Subasta_Online.Subasta_service.Repository.SubastaRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -50,14 +51,25 @@ public class SubastaService {
         Boolean yaEnSubasta = webClientBuilder.build()
                 .post()
                 .uri("lb://Subasta-puja/api/pujas/verificar-subasta-activa")
-                .bodyValue(dto.getIdProducto()) // Solo el ID del producto
+                .bodyValue(dto.getIdProducto())
                 .retrieve()
+                .onStatus(
+                        status -> status.value() == 401,
+                        clientResponse -> {
+                            System.out.println("⚠️ Respuesta 401 desde Subasta-puja");
+                            return Mono.error(new RuntimeException("No autorizado para verificar subasta activa"));
+                        }
+                )
                 .bodyToMono(Boolean.class)
-                .block(); // <-- Esto es necesario
-
+                .onErrorResume(ex -> {
+                    System.out.println("❌ Error al consultar subasta activa: " + ex.getMessage());
+                    return Mono.error(new RuntimeException("el producto ya esta en subasta "));
+                })
+                .block();
         if (Boolean.TRUE.equals(yaEnSubasta)) {
             throw new IllegalArgumentException("El producto ya se encuentra en una subasta activa.");
         }
+
 
         // 2. Crear la subasta si el producto existe
         IniciarSubasta iniciarSubasta = new IniciarSubasta();

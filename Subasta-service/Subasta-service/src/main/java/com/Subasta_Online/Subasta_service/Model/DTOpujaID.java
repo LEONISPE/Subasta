@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -18,7 +19,7 @@ public class DTOpujaID {
     private String nombre;
     private Categoria categoria;
     private String descripcion;
-    private float precioInicial;
+    private BigDecimal precioInicial;
     private LocalDateTime HoraInicio;
     private EstadoProducto estadoProducto;
     private Duration duracionSubasta;

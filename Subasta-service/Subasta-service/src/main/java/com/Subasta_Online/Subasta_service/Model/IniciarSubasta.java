@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -25,7 +26,7 @@ public class IniciarSubasta {
     private String nombre;
     private Categoria categoria;
     private String descripcion;
-    private float precioInicial;
+    private BigDecimal precioInicial;
     private LocalDateTime horaInicio = LocalDateTime.now();
     private EstadoProducto estadoProducto;
     private Duration duracionSubasta;

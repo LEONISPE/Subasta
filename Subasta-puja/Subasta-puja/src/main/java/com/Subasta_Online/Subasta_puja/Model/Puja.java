@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,10 +24,11 @@ public class Puja {
     private String nombre;
     private Categoria categoria;
     private String descripcion;
-    private float precioInicial;
+    private BigDecimal precioInicial;
     private LocalDateTime HoraInicio = LocalDateTime.now();
     private EstadoSubasta estadoSubasta;
     private EstadoProducto estadoProducto;
     private Duration duracionSubasta;
+    private BigDecimal precioActual;
 
 }
