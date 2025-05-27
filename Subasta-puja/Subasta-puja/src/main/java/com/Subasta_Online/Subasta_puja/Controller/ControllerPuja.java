@@ -2,21 +2,23 @@ package com.Subasta_Online.Subasta_puja.Controller;
 
 import com.Subasta_Online.Subasta_puja.Model.DTOApuntarsePuja;
 import com.Subasta_Online.Subasta_puja.Model.DTOpuja;
-import com.Subasta_Online.Subasta_puja.Model.DTOpujaID;
-import com.Subasta_Online.Subasta_puja.Service.PujaService;
+import com.Subasta_Online.Subasta_puja.Service.PujaServiceImpl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 public class ControllerPuja {
 
-    private final PujaService pujaService;
+    private final PujaServiceImpl pujaService;
 
-    public ControllerPuja(PujaService pujaService) {
+    public ControllerPuja(PujaServiceImpl pujaService) {
         this.pujaService = pujaService;
     }
 
@@ -31,10 +33,19 @@ public class ControllerPuja {
         boolean estaActivo = pujaService.existeSubastaActiva(idProducto);
         return ResponseEntity.ok(estaActivo);
     }
+
     @PostMapping("pujas/apuntarse")
-    public ResponseEntity<DTOApuntarsePuja> apuntarsePuja(@RequestBody DTOApuntarsePuja dto) {
-        DTOApuntarsePuja respuesta = pujaService.apuntarsePuja(dto.getIdProducto(), dto.getPrecioActual());
+    public ResponseEntity<DTOApuntarsePuja> apuntarsePuja(@RequestBody DTOApuntarsePuja dto, @AuthenticationPrincipal Jwt jwt) {
+        String mejorPostor = jwt.getClaimAsString("name"); // extraído del token
+
+        DTOApuntarsePuja respuesta = pujaService.apuntarsePuja(
+                dto.getIdProducto(),
+                dto.getPrecioActual(),
+                 mejorPostor
+        );
+
         return ResponseEntity.ok(respuesta);
     }
+
 
 }

@@ -22,4 +22,5 @@ public class DTOiniciarSubasta {
     private LocalDateTime horaInicio;
     private EstadoProducto estadoProducto;
     private Duration duracionSubasta;
+    private String nombreUsuario;
 }

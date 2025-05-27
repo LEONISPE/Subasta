@@ -25,4 +25,6 @@ public class DTOpuja {
     private EstadoProducto estadoProducto;
     private Duration duracionSubasta;
     private BigDecimal precioActual;
+    private String nombreUsuario;
+    private String MejorPostor;
 }

@@ -1,16 +1,16 @@
 package com.Subasta_Online.Subasta_puja.Config;
 
 import com.Subasta_Online.Subasta_puja.Model.DTOiniciarSubasta;
-import com.Subasta_Online.Subasta_puja.Service.PujaService;
+import com.Subasta_Online.Subasta_puja.Service.PujaServiceImpl;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ConsumerPuja {
 
-    private final PujaService pujaService;
+    private final PujaServiceImpl pujaService;
 
-    public ConsumerPuja(PujaService pujaService) {
+    public ConsumerPuja(PujaServiceImpl pujaService) {
         this.pujaService = pujaService;
     }
 

@@ -2,8 +2,7 @@ package com.Subasta_Online.Subasta_producto.Controller;
 
 import com.Subasta_Online.Subasta_producto.Model.DTOaddProducto;
 import com.Subasta_Online.Subasta_producto.Model.DTOmostrarProducto;
-import com.Subasta_Online.Subasta_producto.Model.Producto;
-import com.Subasta_Online.Subasta_producto.Service.ProductoService;
+import com.Subasta_Online.Subasta_producto.Service.ProductoServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +12,10 @@ import java.util.List;
 @RequestMapping("/producto")
 public class ProductoController {
 
-    private final ProductoService productoService;
+    private final ProductoServiceImpl productoService;
 
 
-    public ProductoController(ProductoService productoService) {
+    public ProductoController(ProductoServiceImpl productoService) {
         this.productoService = productoService;
     }
 

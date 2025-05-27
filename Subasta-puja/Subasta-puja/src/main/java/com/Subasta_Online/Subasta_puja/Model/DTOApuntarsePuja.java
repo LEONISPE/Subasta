@@ -15,4 +15,5 @@ public class DTOApuntarsePuja {
 
     private String idProducto;
     private BigDecimal precioActual;
+    private String nombreUsuario;
 }
