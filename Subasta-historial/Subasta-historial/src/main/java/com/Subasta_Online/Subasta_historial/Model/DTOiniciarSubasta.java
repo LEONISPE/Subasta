@@ -13,11 +13,9 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DTOHistorialSubasta {
-    private Long id;
-    private String nombre;
-    private EstadoSubasta estadoSubasta;
+public class DTOiniciarSubasta {
     private String idProducto;
+    private String nombre;
     private Categoria categoria;
     private String descripcion;
     private BigDecimal precioInicial;
@@ -25,7 +23,4 @@ public class DTOHistorialSubasta {
     private EstadoProducto estadoProducto;
     private Duration duracionSubasta;
     private String nombreUsuario;
-    private BigDecimal precioActual;
-    private String mejorPostor;
 }
-

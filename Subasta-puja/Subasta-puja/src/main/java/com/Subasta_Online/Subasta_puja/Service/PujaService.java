@@ -1,6 +1,7 @@
 package com.Subasta_Online.Subasta_puja.Service;
 
 import com.Subasta_Online.Subasta_puja.Model.DTOApuntarsePuja;
+import com.Subasta_Online.Subasta_puja.Model.DTOPujaActualizada;
 import com.Subasta_Online.Subasta_puja.Model.DTOiniciarSubasta;
 import com.Subasta_Online.Subasta_puja.Model.DTOpuja;
 

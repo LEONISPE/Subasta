@@ -49,6 +49,22 @@ services:
 
 
 
+  ### MySQL database for notification
+  db-notification:
+    container_name: db-notofication
+    image: mysql:8.0.33
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: DBnotification
+      MYSQL_USER: Leonispe
+      MYSQL_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3309:3306
+    expose:
+      - 3306
+
+
 
  ### MongoDB para Subasta-producto
   mongo-product:

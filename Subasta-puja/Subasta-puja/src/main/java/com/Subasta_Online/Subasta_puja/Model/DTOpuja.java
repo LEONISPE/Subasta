@@ -28,3 +28,4 @@ public class DTOpuja {
     private String nombreUsuario;
     private String MejorPostor;
 }
+

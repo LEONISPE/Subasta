@@ -1,5 +1,6 @@
 package com.Subasta_Online.Subasta_puja.Service;
 
+import com.Subasta_Online.Subasta_puja.KafkaProducer.SubastaProducer;
 import com.Subasta_Online.Subasta_puja.Model.*;
 import com.Subasta_Online.Subasta_puja.Repository.PujaRepository;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ public class PujaServiceImpl  implements PujaService {
 
 
     private final PujaRepository pujaRepository;
+    private final SubastaProducer subastaProducer;
 
 
     @Override
@@ -88,7 +90,6 @@ public class PujaServiceImpl  implements PujaService {
                 .orElseThrow(() -> new IllegalArgumentException("❌ El producto no está en subasta"));
 
         BigDecimal precioBase = puja.getPrecioActual();
-
         if (precioBase == null || precioBase.compareTo(puja.getPrecioInicial()) == 0) {
             precioBase = puja.getPrecioInicial();
         }
@@ -97,13 +98,36 @@ public class PujaServiceImpl  implements PujaService {
             throw new IllegalArgumentException("❌ El precio ofrecido debe ser mayor al precio actual o inicial");
         }
 
-        // ✅ Guardar nuevo precio y usuario que pujó
+        String anteriorPostor = puja.getMejorPostor();
+        String duenioSubasta = puja.getNombreUsuario(); // Asumiendo que guardas este campo
+
         puja.setPrecioActual(nuevoPrecio);
-        puja.setMejorPostor(mejorPostor);  // asegúrate de que la entidad Puja tenga este campo
+        puja.setMejorPostor(mejorPostor);
         pujaRepository.save(puja);
 
         System.out.println("✅ Usted se apuntó a la puja con éxito");
 
-        return new DTOApuntarsePuja(puja.getIdProducto(), puja.getPrecioActual(), puja.getMejorPostor());
+        DTOPujaActualizada dtoPujaActualizada = new DTOPujaActualizada();
+        dtoPujaActualizada.setIdProducto(idProducto);
+        dtoPujaActualizada.setPrecioActual(nuevoPrecio);
+        dtoPujaActualizada.setMejorPostor(mejorPostor);
+        subastaProducer.sendMessaguePuja(dtoPujaActualizada);
+
+        // Notificaciones
+        if (anteriorPostor != null && !anteriorPostor.equals(mejorPostor)) {
+            NotificacionMejorPostorDTO dtoMejorPostor = new NotificacionMejorPostorDTO();
+            dtoMejorPostor.setDestinatario(anteriorPostor);
+            dtoMejorPostor.setIdProducto(idProducto);
+            dtoMejorPostor.setMensaje("Tu puja ha sido superada por " + mejorPostor);
+            subastaProducer.sendNotificacionMejorPostor(dtoMejorPostor);
+        }
+
+        NotificacionDueñoSubastaDTO dtoDueno = new NotificacionDueñoSubastaDTO();
+        dtoDueno.setDestinatario(duenioSubasta);
+        dtoDueno.setIdProducto(idProducto);
+        dtoDueno.setMensaje("Un nuevo postor ha participado en tu subasta: " + mejorPostor);
+        subastaProducer.sendNotificacionDueno(dtoDueno);
+
+        return new DTOApuntarsePuja(idProducto, nuevoPrecio, mejorPostor);
     }
 }

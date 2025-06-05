@@ -9,11 +9,8 @@ import java.util.List;
 
 public interface HistorialSubastasRepository extends JpaRepository<HistorialPuja, Long> {
 
-    List<HistorialPuja> findByNombre(String nombre);
 
-    List<HistorialPuja> findByPrecioInicial(float precioInicial);
+    List<HistorialPuja> findByNombreUsuario(String nombreUsuario);
 
-    List<HistorialPuja> findByHora(LocalDateTime hora);
 
-    List<HistorialPuja> findByEstadoSubasta(EstadoSubasta estadoSubasta);
 }

@@ -1,12 +1,10 @@
 package com.Subasta_Online.Subasta_historial.Service;
 
-import com.Subasta_Online.Subasta_historial.Model.DTOHistorialSubasta;
-import com.Subasta_Online.Subasta_historial.Model.EstadoSubasta;
+import com.Subasta_Online.Subasta_historial.Model.*;
 import com.Subasta_Online.Subasta_historial.Repository.HistorialSubastasRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,76 +15,79 @@ public class ServiceSubastaImpl implements ServiceSubasta {
     private final HistorialSubastasRepository historialSubastasRepository;
 
     @Override
-    public List<DTOHistorialSubasta> getallHistorialSubastas() {
-        return historialSubastasRepository.findAll()
+    public List<DTOHistorialSubasta> getHistorialSubastasPorUsuario(String nombreUsuario) {
+        return historialSubastasRepository.findByNombreUsuario(nombreUsuario)
                 .stream()
                 .map(HistorialPuja -> new DTOHistorialSubasta(
                         HistorialPuja.getId(),
                         HistorialPuja.getNombre(),
-                        HistorialPuja.getPrecioFinal(),
-                        HistorialPuja.getHora(),
                         HistorialPuja.getEstadoSubasta(),
-                        HistorialPuja.getPrecioInicial()
+                        HistorialPuja.getIdProducto(),
+                        HistorialPuja.getCategoria(),
+                        HistorialPuja.getDescripcion(),
+                        HistorialPuja.getPrecioInicial(),
+                        HistorialPuja.getHoraInicio(),
+                        HistorialPuja.getEstadoProducto(),
+                        HistorialPuja.getDuracionSubasta(),
+                        HistorialPuja.getNombreUsuario(),
+                        HistorialPuja.getPrecioActual(),
+                        HistorialPuja.getMejorPostor()
                 )).toList();
-
     }
+
 
     @Override
-    public List<DTOHistorialSubasta> getaHistorialSubastaByNombre(String nombre) {
-        return historialSubastasRepository.findByNombre(nombre)
-                .stream()
-                .map(HistorialPuja -> new DTOHistorialSubasta(
-                        HistorialPuja.getId(),
-                        HistorialPuja.getNombre(),
-                        HistorialPuja.getPrecioFinal(),
-                        HistorialPuja.getHora(),
-                        HistorialPuja.getEstadoSubasta(),
-                        HistorialPuja.getPrecioInicial()
-                )).toList();
+    public void guardarHistorialDesdeSubastaIniciada(DTOiniciarSubasta dtoiniciarSubasta) {
+        System.out.println("📦 Recibido DTO para guardar historial: " + dtoiniciarSubasta);
+        System.out.println("👤 Nombre de usuario: " + dtoiniciarSubasta.getNombreUsuario());
+        DTOiniciarSubasta dtOiniciarSubasta = new DTOiniciarSubasta();
+        DTOHistorialSubasta dtoHistorialSubasta = new DTOHistorialSubasta();
 
+        // Copia los datos comunes
+        dtOiniciarSubasta.setIdProducto(dtoiniciarSubasta.getIdProducto());
+        dtOiniciarSubasta.setNombre(dtoiniciarSubasta.getNombre());
+        dtOiniciarSubasta.setCategoria(dtoiniciarSubasta.getCategoria());
+        dtOiniciarSubasta.setDescripcion(dtoiniciarSubasta.getDescripcion());
+        dtOiniciarSubasta.setPrecioInicial(dtoiniciarSubasta.getPrecioInicial());
+        dtOiniciarSubasta.setHoraInicio(dtoiniciarSubasta.getHoraInicio());
+        dtOiniciarSubasta.setDuracionSubasta(dtoiniciarSubasta.getDuracionSubasta());
+        dtOiniciarSubasta.setEstadoProducto(dtoiniciarSubasta.getEstadoProducto());
+        dtOiniciarSubasta.setNombreUsuario(dtoiniciarSubasta.getNombreUsuario());
+
+
+        // Agrega los valores personalizados por ti
+        dtoHistorialSubasta.setEstadoSubasta(EstadoSubasta.ACTIVO); // Valor por defecto o según lógica
+
+
+        HistorialPuja historialPuja = new HistorialPuja();
+        historialPuja.setIdProducto(dtoiniciarSubasta.getIdProducto());
+        historialPuja.setNombre(dtoiniciarSubasta.getNombre());
+        historialPuja.setCategoria(dtoiniciarSubasta.getCategoria());
+        historialPuja.setDescripcion(dtoiniciarSubasta.getDescripcion());
+        historialPuja.setPrecioInicial(dtoiniciarSubasta.getPrecioInicial());
+        historialPuja.setHoraInicio(dtoiniciarSubasta.getHoraInicio());
+        historialPuja.setDuracionSubasta(dtoiniciarSubasta.getDuracionSubasta());
+        historialPuja.setEstadoProducto(dtoiniciarSubasta.getEstadoProducto());
+
+        historialPuja.setEstadoSubasta(EstadoSubasta.ACTIVO);
+        historialPuja.setNombreUsuario(dtoiniciarSubasta.getNombreUsuario());
+        System.out.println("Guardando historial para: " + historialPuja.getNombreUsuario());
+        historialSubastasRepository.save(historialPuja);
+        System.out.println("✅ Historial guardado: " + historialPuja);
     }
+    public void actualizarHistorialConPuja(DTOPujaActualizada dtoPujaActualizada) {
 
-@Override
-    public List<DTOHistorialSubasta> getHistorialSubastaByPrecioInicial(float precioInicial) {
-        return historialSubastasRepository.findByPrecioInicial(precioInicial)
-                .stream()
-                .map(HistorialPuja -> new DTOHistorialSubasta(
-                        HistorialPuja.getId(),
-                        HistorialPuja.getNombre(),
-                        HistorialPuja.getPrecioFinal(),
-                        HistorialPuja.getHora(),
-                        HistorialPuja.getEstadoSubasta(),
-                        HistorialPuja.getPrecioInicial()
-                )).toList();
+        DTOPujaActualizada dtpujaActualizada = new DTOPujaActualizada();
 
-    }
-    @Override
-    public List<DTOHistorialSubasta> getHistorialSubastaByHora(LocalDateTime hora) {
-        return historialSubastasRepository.findByHora(hora)
-                .stream()
-                .map(HistorialPuja -> new DTOHistorialSubasta(
-                        HistorialPuja.getId(),
-                        HistorialPuja.getNombre(),
-                        HistorialPuja.getPrecioFinal(),
-                        HistorialPuja.getHora(),
-                        HistorialPuja.getEstadoSubasta(),
-                        HistorialPuja.getPrecioInicial()
-                )) .toList();
+        dtoPujaActualizada.setIdProducto(dtpujaActualizada.getIdProducto());
+        dtoPujaActualizada.setPrecioActual(dtpujaActualizada.getPrecioActual());
+        dtoPujaActualizada.setMejorPostor(dtpujaActualizada.getMejorPostor());
 
-}
-@Override
-    public List<DTOHistorialSubasta> getHistorialByEstadoSubasta(EstadoSubasta estadoSubasta) {
-        return historialSubastasRepository.findByEstadoSubasta(estadoSubasta)
-                .stream()
-                .map(HistorialPuja -> new DTOHistorialSubasta(
-                        HistorialPuja.getId(),
-                        HistorialPuja.getNombre(),
-                        HistorialPuja.getPrecioFinal(),
-                        HistorialPuja.getHora(),
-                        HistorialPuja.getEstadoSubasta(),
-                        HistorialPuja.getPrecioInicial()
-                )).toList();
-
+        HistorialPuja historialPuja = new HistorialPuja();
+        historialPuja.setIdProducto(dtoPujaActualizada.getIdProducto());
+        historialPuja.setPrecioActual(dtoPujaActualizada.getPrecioActual());
+        historialPuja.setMejorPostor(dtoPujaActualizada.getMejorPostor());
+        historialSubastasRepository.save(historialPuja);
 
     }
 

@@ -26,7 +26,7 @@ public class SubastaServiceController {
             @RequestBody DTOiniciarSubasta dto,
             @AuthenticationPrincipal Jwt jwt
     ) {
-        String nombreUsuario = jwt.getClaim("name"); // o "name"
+        String nombreUsuario = jwt.getClaimAsString("preferred_username"); // o "name"
         dto.setNombreUsuario(nombreUsuario); // agregar este campo en el DTO
         DTOiniciarSubasta respuesta = subastaService.iniciarSubasta(dto);
         return ResponseEntity.ok(respuesta);
