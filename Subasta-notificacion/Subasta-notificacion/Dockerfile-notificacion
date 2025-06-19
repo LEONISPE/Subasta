@@ -1,0 +1,13 @@
+
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
+WORKDIR /build
+COPY ../.. .
+RUN mvn -B -ntp clean package -DskipTests -pl Subasta-notificacion/Subasta-notificacion -am
+
+
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=builder /build/Subasta-notificacion/Subasta-notificacion/target/*.jar app.jar
+EXPOSE 8082
+ENTRYPOINT ["java", "-jar", "app.jar"]
+

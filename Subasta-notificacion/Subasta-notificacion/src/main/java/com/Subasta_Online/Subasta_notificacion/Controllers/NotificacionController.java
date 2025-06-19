@@ -1,6 +1,7 @@
 package com.Subasta_Online.Subasta_notificacion.Controllers;
 
 import com.Subasta_Online.Subasta_notificacion.Model.NotificacionDTO;
+import com.Subasta_Online.Subasta_notificacion.Model.NotificacionSubastaProgramadaDTO;
 import com.Subasta_Online.Subasta_notificacion.Service.NotificacionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,6 +32,14 @@ public class NotificacionController {
         String usuario = jwt.getClaimAsString("name");
         List<NotificacionDTO> notis = notificacionService.obtenerNotificacionesUsuario(usuario);
         return ResponseEntity.ok(notis);
+    }
+
+    @GetMapping("/mis-subastas/futuras")
+    public ResponseEntity<List<NotificacionSubastaProgramadaDTO>> verMisSubastasFuturas(@AuthenticationPrincipal Jwt jwt) {
+        String usuario = jwt.getClaimAsString("preferred_username");
+        System.out.println("Usuario autenticado: " + usuario);
+        List<NotificacionSubastaProgramadaDTO> subastas = notificacionService.obtenerSubastasFuturasPorUsuario(usuario);
+        return ResponseEntity.ok(subastas);
     }
 }
 

@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotificacionMejorPostorDTO {
-    private String destinatario;
-    private String mensaje;
+public class DTOSubastaFinalizadas {
+
     private String idProducto;
+    private EstadoSubasta estadoSubasta;
 }

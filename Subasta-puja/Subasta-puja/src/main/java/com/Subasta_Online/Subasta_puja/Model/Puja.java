@@ -32,5 +32,6 @@ public class Puja {
     private BigDecimal precioActual;
     private String nombreUsuario;
     private String mejorPostor;
+    private LocalDateTime fechaFuturaInicio;
 
 }

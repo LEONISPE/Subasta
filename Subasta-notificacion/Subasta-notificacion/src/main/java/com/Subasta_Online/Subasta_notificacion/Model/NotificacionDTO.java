@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NotificacionDTO {
-    private String destinatario; // nombre del usuario
+    private String destinatario;
     private String mensaje;
     private String idProducto;
     private LocalDateTime fecha;

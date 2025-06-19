@@ -55,8 +55,8 @@ public class ServiceSubastaImpl implements ServiceSubasta {
         dtOiniciarSubasta.setNombreUsuario(dtoiniciarSubasta.getNombreUsuario());
 
 
-        // Agrega los valores personalizados por ti
-        dtoHistorialSubasta.setEstadoSubasta(EstadoSubasta.ACTIVO); // Valor por defecto o según lógica
+
+        dtoHistorialSubasta.setEstadoSubasta(EstadoSubasta.ACTIVO);
 
 
         HistorialPuja historialPuja = new HistorialPuja();
@@ -90,6 +90,16 @@ public class ServiceSubastaImpl implements ServiceSubasta {
         historialSubastasRepository.save(historialPuja);
 
     }
+public void  finalizarSubastas(DTOSubastaFinalizadas dto){
+       DTOSubastaFinalizadas dtoSubastaFinalizadas = new DTOSubastaFinalizadas();
+       dtoSubastaFinalizadas.setIdProducto(dtoSubastaFinalizadas.getIdProducto());
+       dtoSubastaFinalizadas.setEstadoSubasta(dtoSubastaFinalizadas.getEstadoSubasta());
+
+       HistorialPuja historialPuja = new HistorialPuja();
+       historialPuja.setIdProducto(dtoSubastaFinalizadas.getIdProducto());
+       historialPuja.setEstadoSubasta(dtoSubastaFinalizadas.getEstadoSubasta());
+       historialSubastasRepository.save(historialPuja);
+}
 
 
     }

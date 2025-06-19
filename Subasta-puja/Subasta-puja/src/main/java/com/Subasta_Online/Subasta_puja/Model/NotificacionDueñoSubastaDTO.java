@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NotificacionDueñoSubastaDTO {
-    private String destinatario; // ejemplo: "alberto"
+    private String destinatario;
     private String mensaje;
     private String idProducto;
 }

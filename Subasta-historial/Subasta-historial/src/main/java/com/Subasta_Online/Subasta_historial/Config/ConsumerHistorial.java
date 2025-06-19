@@ -1,6 +1,7 @@
 package com.Subasta_Online.Subasta_historial.Config;
 
 import com.Subasta_Online.Subasta_historial.Model.DTOPujaActualizada;
+import com.Subasta_Online.Subasta_historial.Model.DTOSubastaFinalizadas;
 import com.Subasta_Online.Subasta_historial.Model.DTOiniciarSubasta;
 import com.Subasta_Online.Subasta_historial.Service.ServiceSubastaImpl;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -28,10 +29,17 @@ public class ConsumerHistorial {
     @KafkaListener(
             topics = "subasta-actualizada-topic",
             groupId = "Subastas-group-puja",
-            containerFactory = "pujaActualizadaListenerFactory"
-    )
+            containerFactory = "pujaActualizadaListenerFactory")
     public void consumirActualizacionPuja(DTOPujaActualizada dto) {
         serviceSubasta.actualizarHistorialConPuja(dto);
     }
 
+    @KafkaListener(
+            topics = "estado-topic",
+            groupId = "Subastas-group-Subasta-Finalizadas",
+            containerFactory = "SubastasFinalizadasListenerFactory"
+    )
+public void consumirFinalisacionEstadoPujas(DTOSubastaFinalizadas dto){
+        serviceSubasta.finalizarSubastas(dto);
+}
 }

@@ -1,6 +1,7 @@
 package com.Subasta_Online.Subasta_puja.KafkaProducer;
 
 import com.Subasta_Online.Subasta_puja.Model.DTOPujaActualizada;
+import com.Subasta_Online.Subasta_puja.Model.DTOSubastaFinalizadas;
 import com.Subasta_Online.Subasta_puja.Model.NotificacionDueñoSubastaDTO;
 import com.Subasta_Online.Subasta_puja.Model.NotificacionMejorPostorDTO;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -23,5 +24,8 @@ public class SubastaProducer {
 
     public void sendNotificacionDueno(NotificacionDueñoSubastaDTO dto) {
         kafkaTemplate.send("notificacion-topic", dto);
+    }
+    public void sendSubastaFinalizada(DTOSubastaFinalizadas dto) {
+        kafkaTemplate.send("estado-topic", dto);
     }
 }

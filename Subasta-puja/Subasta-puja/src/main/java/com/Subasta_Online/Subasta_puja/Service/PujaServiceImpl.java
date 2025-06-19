@@ -4,12 +4,16 @@ import com.Subasta_Online.Subasta_puja.KafkaProducer.SubastaProducer;
 import com.Subasta_Online.Subasta_puja.Model.*;
 import com.Subasta_Online.Subasta_puja.Repository.PujaRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.Subasta_Online.Subasta_puja.Model.EstadoSubasta.ACTIVO;
+import static com.Subasta_Online.Subasta_puja.Model.EstadoSubasta.CERRADO;
 
 
 @Service
@@ -39,6 +43,29 @@ public class PujaServiceImpl  implements PujaService {
                         Puja.getNombreUsuario(),
                         Puja.getMejorPostor()
                 )).toList();
+    }
+
+    @Override
+    public List<DTOFuturasSubastas> mostrarFuturasSubatsas() {
+        LocalDateTime ahora = LocalDateTime.now();
+
+        return pujaRepository.findAll()
+                .stream()
+                .filter(p -> p.getFechaFuturaInicio() != null) // Evita errores por null
+                .filter(p -> p.getFechaFuturaInicio().isAfter(ahora)) // Solo subastas futuras
+                .filter(p -> p.getEstadoSubasta() == EstadoSubasta.CERRADO) // Aún no abiertas
+                .map(p -> new DTOFuturasSubastas(
+                        p.getIdProducto(),
+                        p.getNombre(),
+                        p.getCategoria(),
+                        p.getDescripcion(),
+                        p.getPrecioInicial(),
+                        p.getEstadoProducto(),
+                        p.getDuracionSubasta(),
+                        p.getNombreUsuario(),
+                        p.getFechaFuturaInicio()
+                ))
+                .toList();
     }
 
     @Override
@@ -78,6 +105,37 @@ public class PujaServiceImpl  implements PujaService {
     }
 
     @Override
+    public void guardarSubastasaFuturo(DTOFuturasSubastas dtoFuturasSubastas) {
+        DTOFuturasSubastas dtoFuturasSubastas1 = new DTOFuturasSubastas();
+        DTOpuja dtopuja = new DTOpuja();
+        dtoFuturasSubastas1.setIdProducto(dtoFuturasSubastas.getIdProducto());
+        dtoFuturasSubastas1.setNombre(dtoFuturasSubastas.getNombre());
+        dtoFuturasSubastas1.setCategoria(dtoFuturasSubastas.getCategoria());
+        dtoFuturasSubastas1.setDescripcion(dtoFuturasSubastas.getDescripcion());
+        dtoFuturasSubastas1.setPrecioInicial(dtoFuturasSubastas.getPrecioInicial());
+        dtoFuturasSubastas1.setEstadoProducto(dtoFuturasSubastas.getEstadoProducto());
+        dtoFuturasSubastas1.setDuracionSubasta(dtoFuturasSubastas.getDuracionSubasta());
+        dtoFuturasSubastas1.setNombreUsuario(dtoFuturasSubastas.getNombreUsuario());
+        dtoFuturasSubastas1.setFechaFuturaInicio(dtoFuturasSubastas.getFechaFuturaInicio());
+
+        dtopuja.setEstadoSubasta(CERRADO);
+
+        Puja puja = new Puja();
+        puja.setIdProducto(dtoFuturasSubastas.getIdProducto());
+        puja.setNombre(dtoFuturasSubastas.getNombre());
+        puja.setCategoria(dtoFuturasSubastas.getCategoria());
+        puja.setDescripcion(dtoFuturasSubastas.getDescripcion());
+        puja.setPrecioInicial(dtoFuturasSubastas.getPrecioInicial());
+        puja.setPrecioInicial(dtoFuturasSubastas.getPrecioInicial());
+        puja.setEstadoProducto(dtoFuturasSubastas.getEstadoProducto());
+        puja.setDuracionSubasta(dtoFuturasSubastas.getDuracionSubasta());
+        puja.setNombreUsuario(dtoFuturasSubastas.getNombreUsuario());
+        puja.setFechaFuturaInicio(dtoFuturasSubastas.getFechaFuturaInicio());
+        puja.setEstadoSubasta(CERRADO);
+        pujaRepository.save(puja);
+    }
+
+    @Override
     public boolean existeSubastaActiva(String idProducto) {
         return pujaRepository.findByIdProducto(idProducto)
                 .stream()
@@ -97,9 +155,16 @@ public class PujaServiceImpl  implements PujaService {
         if (nuevoPrecio.compareTo(precioBase) <= 0) {
             throw new IllegalArgumentException("❌ El precio ofrecido debe ser mayor al precio actual o inicial");
         }
-
         String anteriorPostor = puja.getMejorPostor();
         String duenioSubasta = puja.getNombreUsuario(); // Asumiendo que guardas este campo
+
+        if (duenioSubasta != null && duenioSubasta.equals(mejorPostor)) {
+            throw new IllegalArgumentException("❌ No puedes apuntarte a tu propia subasta");
+        }
+        if (puja.getEstadoSubasta().equals(EstadoSubasta.CERRADO)) {
+            throw new IllegalArgumentException("no puedes apuntarte a subastas cerradas ");
+        }
+
 
         puja.setPrecioActual(nuevoPrecio);
         puja.setMejorPostor(mejorPostor);
@@ -129,5 +194,50 @@ public class PujaServiceImpl  implements PujaService {
         subastaProducer.sendNotificacionDueno(dtoDueno);
 
         return new DTOApuntarsePuja(idProducto, nuevoPrecio, mejorPostor);
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void cerrarSubastasFinalizadas() {
+        List<Puja> subastasActivas = pujaRepository.findByEstadoSubasta(EstadoSubasta.ACTIVO);
+
+        for (Puja puja : subastasActivas) {
+            LocalDateTime horaFin = puja.getHoraInicio().plus(puja.getDuracionSubasta());
+
+            if (LocalDateTime.now().isAfter(horaFin)) {
+                puja.setEstadoSubasta(EstadoSubasta.CERRADO);
+                pujaRepository.save(puja);
+
+                System.out.println("Subasta cerrada: " + puja.getNombre());
+
+                // Crear DTO
+                DTOSubastaFinalizadas dto = new DTOSubastaFinalizadas();
+                dto.setIdProducto(puja.getIdProducto());
+                dto.setEstadoSubasta(EstadoSubasta.CERRADO);
+
+                // Enviar mensaje Kafka
+                subastaProducer.sendSubastaFinalizada(dto);
+            }
+        }
+    }
+
+    @Scheduled(fixedRate = 60000) // cada minuto
+    public void abrirSubastasProgramadas() {
+        List<Puja> subastasProgramadas = pujaRepository.findByEstadoSubasta(EstadoSubasta.ACTIVO);
+
+        for (Puja puja : subastasProgramadas) {
+            LocalDateTime fechaProgramada = puja.getFechaFuturaInicio(); // esto ya debe ser LocalDateTime
+            LocalDateTime ahora = LocalDateTime.now();
+
+            // Si la hora actual es igual o ya pasó la hora programada
+            if (!ahora.isBefore(fechaProgramada)) {
+                puja.setEstadoSubasta(EstadoSubasta.ACTIVO);
+                puja.setHoraInicio(ahora); // guardamos cuándo arrancó realmente
+                pujaRepository.save(puja);
+
+                System.out.println("Subasta ACTIVADA: " + puja.getNombre());
+
+
+            }
+        }
     }
 }

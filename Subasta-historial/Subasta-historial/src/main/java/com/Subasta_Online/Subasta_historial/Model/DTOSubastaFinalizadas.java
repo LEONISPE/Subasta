@@ -1,4 +1,4 @@
-package com.Subasta_Online.Subasta_puja.Model;
+package com.Subasta_Online.Subasta_historial.Model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotificacionMejorPostorDTO {
-    private String destinatario;
-    private String mensaje;
+public class DTOSubastaFinalizadas {
+
     private String idProducto;
+    private EstadoSubasta estadoSubasta;
 }

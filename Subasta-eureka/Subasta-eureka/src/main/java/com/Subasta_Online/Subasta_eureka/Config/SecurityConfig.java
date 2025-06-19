@@ -12,7 +12,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable()) // <-- ✅ forma recomendada
+                .csrf(csrf -> csrf.disable())
                 .build();
     }
 }

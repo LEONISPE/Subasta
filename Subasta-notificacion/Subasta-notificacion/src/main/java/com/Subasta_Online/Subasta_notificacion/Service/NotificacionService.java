@@ -2,6 +2,7 @@ package com.Subasta_Online.Subasta_notificacion.Service;
 
 import com.Subasta_Online.Subasta_notificacion.Model.Notificacion;
 import com.Subasta_Online.Subasta_notificacion.Model.NotificacionDTO;
+import com.Subasta_Online.Subasta_notificacion.Model.NotificacionSubastaProgramadaDTO;
 import com.Subasta_Online.Subasta_notificacion.Repository.NotificacionRepository;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,29 @@ public class NotificacionService {
                     dto.setMensaje(n.getMensaje());
                     dto.setIdProducto(n.getIdProducto());
                     dto.setFecha(n.getFecha());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public void guardarNotificacionSubataFuturas(NotificacionSubastaProgramadaDTO notificacionSubastaProgramadaDTO) {
+        Notificacion n = new Notificacion();
+        n.setDestinatario(notificacionSubastaProgramadaDTO.getDestinatario());
+        n.setIdProducto(notificacionSubastaProgramadaDTO.getIdProducto());
+        n.setMensaje(notificacionSubastaProgramadaDTO.getMensaje());
+        n.setFechaFuturaInicio(notificacionSubastaProgramadaDTO.getFechaFuturaInicio());
+        notificacionRepository.save(n);
+
+    }
+    public List<NotificacionSubastaProgramadaDTO> obtenerSubastasFuturasPorUsuario(String usuario) {
+        return notificacionRepository.findByDestinatarioAndFechaFuturaInicioIsNotNullOrderByFechaFuturaInicioDesc(usuario)
+                .stream()
+                .map(n -> {
+                    NotificacionSubastaProgramadaDTO dto = new NotificacionSubastaProgramadaDTO();
+                    dto.setDestinatario(n.getDestinatario());
+                    dto.setIdProducto(n.getIdProducto());
+                    dto.setMensaje(n.getMensaje());
+                    dto.setFechaFuturaInicio(n.getFechaFuturaInicio());
                     return dto;
                 })
                 .collect(Collectors.toList());

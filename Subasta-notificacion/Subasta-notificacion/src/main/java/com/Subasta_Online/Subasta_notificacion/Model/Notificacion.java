@@ -21,4 +21,5 @@ public class Notificacion {
     private String mensaje;
     private String idProducto;
     private LocalDateTime fecha;
+    private LocalDateTime fechaFuturaInicio;
 }

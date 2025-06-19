@@ -8,7 +8,7 @@
 		<groupId>com.Subasta-Online</groupId>
 		<artifactId>Subasta</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../../pom.xml</relativePath> <!-- Ruta al padre -->
+		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>subasta-notificacion</artifactId>

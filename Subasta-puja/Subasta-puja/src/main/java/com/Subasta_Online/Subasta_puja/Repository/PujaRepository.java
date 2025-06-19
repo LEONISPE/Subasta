@@ -1,6 +1,7 @@
 package com.Subasta_Online.Subasta_puja.Repository;
 
 import com.Subasta_Online.Subasta_puja.Model.Categoria;
+import com.Subasta_Online.Subasta_puja.Model.EstadoSubasta;
 import com.Subasta_Online.Subasta_puja.Model.Puja;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -17,5 +18,7 @@ public interface PujaRepository  extends JpaRepository<Puja, Long> {
     List<Puja> findByCategoria(Categoria categoria);
 
     Optional<Puja> findByIdProducto(String idProducto);
+    List<Puja> findByEstadoSubasta(EstadoSubasta estado);
+
 
 }

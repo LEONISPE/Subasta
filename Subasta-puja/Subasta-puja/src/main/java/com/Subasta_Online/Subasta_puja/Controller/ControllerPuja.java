@@ -1,12 +1,11 @@
 package com.Subasta_Online.Subasta_puja.Controller;
 
 import com.Subasta_Online.Subasta_puja.Model.DTOApuntarsePuja;
+import com.Subasta_Online.Subasta_puja.Model.DTOFuturasSubastas;
 import com.Subasta_Online.Subasta_puja.Model.DTOpuja;
 import com.Subasta_Online.Subasta_puja.Service.PujaServiceImpl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +35,7 @@ public class ControllerPuja {
 
     @PostMapping("pujas/apuntarse")
     public ResponseEntity<DTOApuntarsePuja> apuntarsePuja(@RequestBody DTOApuntarsePuja dto, @AuthenticationPrincipal Jwt jwt) {
-        String mejorPostor = jwt.getClaimAsString("name"); // extraído del token
+        String mejorPostor = jwt.getClaimAsString("name");
 
         DTOApuntarsePuja respuesta = pujaService.apuntarsePuja(
                 dto.getIdProducto(),
@@ -47,5 +46,9 @@ public class ControllerPuja {
         return ResponseEntity.ok(respuesta);
     }
 
-
+    @GetMapping("/pujas/futuras")
+   public ResponseEntity<List<DTOFuturasSubastas>> mostrarSubastasFuturas() {
+        List<DTOFuturasSubastas> mostrarFuturasPujas = pujaService.mostrarFuturasSubatsas();
+        return ResponseEntity.ok(mostrarFuturasPujas);
+    }
 }
