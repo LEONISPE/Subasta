@@ -1,9 +1,8 @@
 package com.Subasta_Online.Subasta_producto.Model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 @Getter
 @Setter
@@ -11,8 +10,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DTOaddProducto {
 
+    @NotBlank( message = "el nombre de producto es obligatorio")
     private String nombre;
+    @NotBlank(message = "la descripcion por motivos de informacion del producto es obligatorio")
     private String descripcion;
+    @NotNull(message = "debe selecionar en que estado esta el producto")
     private EstadoProducto estadoProducto;
+    @NotNull(message = "debe selecionar la categoria de ese producto")
     private Categoria categoria;
 }

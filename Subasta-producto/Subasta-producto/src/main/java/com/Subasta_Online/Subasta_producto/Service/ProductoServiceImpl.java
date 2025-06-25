@@ -1,5 +1,6 @@
 package com.Subasta_Online.Subasta_producto.Service;
 
+import com.Subasta_Online.Subasta_producto.Excepcions.ProductoInvalidoException;
 import com.Subasta_Online.Subasta_producto.Model.DTOaddProducto;
 import com.Subasta_Online.Subasta_producto.Model.DTOmostrarProducto;
 import com.Subasta_Online.Subasta_producto.Model.Producto;
@@ -18,6 +19,9 @@ public class ProductoServiceImpl  implements ProductoService{
 
 @Override
     public DTOaddProducto addProducto(DTOaddProducto dtOaddProducto) {
+    if (dtOaddProducto.getNombre().contains("xxx")) {
+        throw new ProductoInvalidoException("Nombre de producto no permitido");
+    }
         Producto productonew = new Producto();
         productonew.setNombre(dtOaddProducto.getNombre());
         productonew.setDescripcion(dtOaddProducto.getDescripcion());
@@ -54,6 +58,7 @@ public class ProductoServiceImpl  implements ProductoService{
                         producto.getEstadoProducto(),
                         producto.getCategoria()
                 ))
-                .orElseThrow(() -> new NoSuchElementException("Producto no encontrado con id " + id));
+                .orElseThrow(() -> new ProductoInvalidoException("Producto con ID " + id + " no encontrado"));
     }
-}
+    }
+
