@@ -20,23 +20,23 @@ public class NotificacionService {
     }
 
     public void guardarNotificacion(NotificacionDTO dto) {
-        Notificacion n = new Notificacion();
-        n.setDestinatario(dto.getDestinatario());
-        n.setMensaje(dto.getMensaje());
-        n.setIdProducto(dto.getIdProducto());
-        n.setFecha(LocalDateTime.now());
-        notificacionRepository.save(n);
+        Notificacion notificacion = new Notificacion();
+        notificacion.setDestinatario(dto.getDestinatario());
+        notificacion.setMensaje(dto.getMensaje());
+        notificacion.setIdProducto(dto.getIdProducto());
+        notificacion.setFecha(LocalDateTime.now());
+        notificacionRepository.save(notificacion);
     }
 
     public List<NotificacionDTO> obtenerNotificacionesUsuario(String usuario) {
         return notificacionRepository.findByDestinatarioOrderByFechaDesc(usuario)
                 .stream()
-                .map(n -> {
+                .map(notificacion -> {
                     NotificacionDTO dto = new NotificacionDTO();
-                    dto.setDestinatario(n.getDestinatario());
-                    dto.setMensaje(n.getMensaje());
-                    dto.setIdProducto(n.getIdProducto());
-                    dto.setFecha(n.getFecha());
+                    dto.setDestinatario(notificacion.getDestinatario());
+                    dto.setMensaje(notificacion.getMensaje());
+                    dto.setIdProducto(notificacion.getIdProducto());
+                    dto.setFecha(notificacion.getFecha());
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -54,12 +54,12 @@ public class NotificacionService {
     public List<NotificacionSubastaProgramadaDTO> obtenerSubastasFuturasPorUsuario(String usuario) {
         return notificacionRepository.findByDestinatarioAndFechaFuturaInicioIsNotNullOrderByFechaFuturaInicioDesc(usuario)
                 .stream()
-                .map(n -> {
+                .map(notificacion -> {
                     NotificacionSubastaProgramadaDTO dto = new NotificacionSubastaProgramadaDTO();
-                    dto.setDestinatario(n.getDestinatario());
-                    dto.setIdProducto(n.getIdProducto());
-                    dto.setMensaje(n.getMensaje());
-                    dto.setFechaFuturaInicio(n.getFechaFuturaInicio());
+                    dto.setDestinatario(notificacion.getDestinatario());
+                    dto.setIdProducto(notificacion.getIdProducto());
+                    dto.setMensaje(notificacion.getMensaje());
+                    dto.setFechaFuturaInicio(notificacion.getFechaFuturaInicio());
                     return dto;
                 })
                 .collect(Collectors.toList());

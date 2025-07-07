@@ -1,5 +1,6 @@
 package com.Subasta_Online.Subasta_puja.Model;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,5 +1,6 @@
 package com.Subasta_Online.Subasta_puja.Model;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class DTOApuntarsePuja {
 
+
+    @NotBlank(message = "el id del producto debe ser obligatorio")
     private String idProducto;
     private BigDecimal precioActual;
     private String nombreUsuario;

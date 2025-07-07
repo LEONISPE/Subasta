@@ -34,8 +34,8 @@ public class NotificacionController {
         return ResponseEntity.ok(notis);
     }
 
-    @GetMapping("/mis-subastas/futuras")
-    public ResponseEntity<List<NotificacionSubastaProgramadaDTO>> verMisSubastasFuturas(@AuthenticationPrincipal Jwt jwt) {
+    @GetMapping("/subastas/futuras")
+    public ResponseEntity<List<NotificacionSubastaProgramadaDTO>> verSubastasFuturas(@AuthenticationPrincipal Jwt jwt) {
         String usuario = jwt.getClaimAsString("preferred_username");
         System.out.println("Usuario autenticado: " + usuario);
         List<NotificacionSubastaProgramadaDTO> subastas = notificacionService.obtenerSubastasFuturasPorUsuario(usuario);

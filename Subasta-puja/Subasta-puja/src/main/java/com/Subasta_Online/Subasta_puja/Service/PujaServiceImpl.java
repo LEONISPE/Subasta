@@ -1,5 +1,6 @@
 package com.Subasta_Online.Subasta_puja.Service;
 
+import com.Subasta_Online.Subasta_puja.Excepcions.PeticionInvalidoException;
 import com.Subasta_Online.Subasta_puja.KafkaProducer.SubastaProducer;
 import com.Subasta_Online.Subasta_puja.Model.*;
 import com.Subasta_Online.Subasta_puja.Repository.PujaRepository;
@@ -8,7 +9,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -145,7 +145,7 @@ public class PujaServiceImpl  implements PujaService {
     @Override
     public DTOApuntarsePuja apuntarsePuja(String idProducto, BigDecimal nuevoPrecio, String mejorPostor) {
         Puja puja = pujaRepository.findByIdProducto(idProducto)
-                .orElseThrow(() -> new IllegalArgumentException("❌ El producto no está en subasta"));
+                .orElseThrow(() -> new PeticionInvalidoException("No existe esa  puja con el idProducto: " + idProducto));
 
         BigDecimal precioBase = puja.getPrecioActual();
         if (precioBase == null || precioBase.compareTo(puja.getPrecioInicial()) == 0) {
@@ -153,16 +153,16 @@ public class PujaServiceImpl  implements PujaService {
         }
 
         if (nuevoPrecio.compareTo(precioBase) <= 0) {
-            throw new IllegalArgumentException("❌ El precio ofrecido debe ser mayor al precio actual o inicial");
+            throw new PeticionInvalidoException("❌ El precio ofrecido debe ser mayor al precio actual o inicial");
         }
         String anteriorPostor = puja.getMejorPostor();
-        String duenioSubasta = puja.getNombreUsuario(); // Asumiendo que guardas este campo
+        String duenioSubasta = puja.getNombreUsuario();
 
         if (duenioSubasta != null && duenioSubasta.equals(mejorPostor)) {
-            throw new IllegalArgumentException("❌ No puedes apuntarte a tu propia subasta");
+            throw new PeticionInvalidoException("❌ No puedes apuntarte a tu propia subasta");
         }
         if (puja.getEstadoSubasta().equals(EstadoSubasta.CERRADO)) {
-            throw new IllegalArgumentException("no puedes apuntarte a subastas cerradas ");
+            throw new PeticionInvalidoException("no puedes apuntarte a subastas cerradas ");
         }
 
 

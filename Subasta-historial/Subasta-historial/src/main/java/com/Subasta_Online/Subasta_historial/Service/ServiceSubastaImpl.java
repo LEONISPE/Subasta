@@ -43,7 +43,7 @@ public class ServiceSubastaImpl implements ServiceSubasta {
         DTOiniciarSubasta dtOiniciarSubasta = new DTOiniciarSubasta();
         DTOHistorialSubasta dtoHistorialSubasta = new DTOHistorialSubasta();
 
-        // Copia los datos comunes
+
         dtOiniciarSubasta.setIdProducto(dtoiniciarSubasta.getIdProducto());
         dtOiniciarSubasta.setNombre(dtoiniciarSubasta.getNombre());
         dtOiniciarSubasta.setCategoria(dtoiniciarSubasta.getCategoria());

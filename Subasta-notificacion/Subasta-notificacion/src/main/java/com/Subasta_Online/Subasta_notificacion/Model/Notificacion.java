@@ -16,7 +16,6 @@ public class Notificacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String destinatario;
     private String mensaje;
     private String idProducto;

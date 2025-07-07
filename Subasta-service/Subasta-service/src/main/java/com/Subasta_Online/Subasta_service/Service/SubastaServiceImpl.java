@@ -1,5 +1,6 @@
 package com.Subasta_Online.Subasta_service.Service;
 
+import com.Subasta_Online.Subasta_service.Excepcions.PeticionInvalidoException;
 import com.Subasta_Online.Subasta_service.KafkaProducerConfig.SubastaProducer;
 import com.Subasta_Online.Subasta_service.Model.*;
 import com.Subasta_Online.Subasta_service.Repository.SubastaRepository;
@@ -9,6 +10,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -32,11 +36,14 @@ public class SubastaServiceImpl implements SubastaService {
     public DTOiniciarSubasta iniciarSubasta(DTOiniciarSubasta dto) {
         String productoId = dto.getIdProducto();
         System.out.println("ID recibido: " + productoId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String jwtToken = ((JwtAuthenticationToken) authentication).getToken().getTokenValue();
 
         // 🟩 Validar existencia del producto
         Boolean existe = webClientBuilder.build()
                 .get()
                 .uri("lb://SUBASTA-PRODUCTO/producto/mostrar/{id}", productoId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .exchangeToMono(response -> {
                     System.out.println("Código de respuesta: " + response.statusCode());
 
@@ -51,31 +58,32 @@ public class SubastaServiceImpl implements SubastaService {
                 .block();
 
         if (!existe) {
-            throw new IllegalArgumentException("El producto con ID " + productoId + " no existe.");
+            throw new PeticionInvalidoException("El producto con ID " + productoId + " no existe.");
         }
 
         // 🟨 Verificar si ya está en subasta activa
         Boolean yaEnSubasta = webClientBuilder.build()
                 .post()
                 .uri("lb://Subasta-puja/api/pujas/verificar-subasta-activa")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .bodyValue(dto.getIdProducto())
                 .retrieve()
                 .onStatus(
                         status -> status.value() == 401,
                         clientResponse -> {
                             System.out.println("⚠️ Respuesta 401 desde Subasta-puja");
-                            return Mono.error(new RuntimeException("No autorizado para verificar subasta activa"));
+                            return Mono.error(new PeticionInvalidoException("No autorizado para verificar subasta activa"));
                         }
                 )
                 .bodyToMono(Boolean.class)
                 .onErrorResume(ex -> {
                     System.out.println("❌ Error al consultar subasta activa: " + ex.getMessage());
-                    return Mono.error(new RuntimeException("el producto ya está en subasta"));
+                    return Mono.error(new PeticionInvalidoException("el producto ya está en subasta"));
                 })
                 .block();
 
         if (Boolean.TRUE.equals(yaEnSubasta)) {
-            throw new IllegalArgumentException("El producto ya se encuentra en una subasta activa.");
+            throw new PeticionInvalidoException("El producto ya se encuentra en una subasta activa.");
         }
 
         IniciarSubasta iniciarSubasta = new IniciarSubasta();
@@ -100,11 +108,14 @@ public class SubastaServiceImpl implements SubastaService {
     public DTOFuturasSubastas programarFuturasSubastas(DTOFuturasSubastas dto) {
         String productoId = dto.getIdProducto();
         System.out.println("ID recibido: " + productoId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String jwtToken = ((JwtAuthenticationToken) authentication).getToken().getTokenValue();
 
         // 🟩 Validar existencia del producto
         Boolean existe = webClientBuilder.build()
                 .get()
                 .uri("lb://SUBASTA-PRODUCTO/producto/mostrar/{id}", productoId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .exchangeToMono(response -> {
                     System.out.println("Código de respuesta: " + response.statusCode());
 
@@ -119,37 +130,38 @@ public class SubastaServiceImpl implements SubastaService {
                 .block();
 
         if (!existe) {
-            throw new IllegalArgumentException("El producto con ID " + productoId + " no existe.");
+            throw new PeticionInvalidoException("El producto con ID " + productoId + " no existe.");
         }
 
         // 🟨 Verificar si ya está en subasta activa
         Boolean yaEnSubasta = webClientBuilder.build()
                 .post()
                 .uri("lb://Subasta-puja/api/pujas/verificar-subasta-activa")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .bodyValue(dto.getIdProducto())
                 .retrieve()
                 .onStatus(
                         status -> status.value() == 401,
                         clientResponse -> {
                             System.out.println("⚠️ Respuesta 401 desde Subasta-puja");
-                            return Mono.error(new RuntimeException("No autorizado para verificar subasta activa"));
+                            return Mono.error(new PeticionInvalidoException("No autorizado para verificar subasta activa"));
                         }
                 )
                 .bodyToMono(Boolean.class)
                 .onErrorResume(ex -> {
                     System.out.println("❌ Error al consultar subasta activa: " + ex.getMessage());
-                    return Mono.error(new RuntimeException("el producto ya está en subasta"));
+                    return Mono.error(new PeticionInvalidoException("el producto ya está en subasta"));
                 })
                 .block();
 
         if (Boolean.TRUE.equals(yaEnSubasta)) {
-            throw new IllegalArgumentException("El producto ya se encuentra en una subasta activa.");
+            throw new PeticionInvalidoException("El producto ya se encuentra en una subasta activa.");
         }
 
         LocalDateTime fechaMinima = LocalDate.now().plusDays(1).atStartOfDay(); // mañana a las 00:00
 
         if (dto.getFechaFuturaInicio().isBefore(fechaMinima)) {
-            throw new IllegalArgumentException("Debes programar la subasta mínimo con 1 día de anticipación");
+            throw new PeticionInvalidoException("Debes programar la subasta mínimo con 1 día de anticipación");
         }
 
         IniciarSubasta iniciarSubasta = new IniciarSubasta();
@@ -179,6 +191,25 @@ public class SubastaServiceImpl implements SubastaService {
 
         return dto;
     }
+
+    @Override
+    public DTOMostarSubastas getSubastaPorId(Long id) {
+        return subastaRepository.findById(id)
+                .map(iniciarSubasta -> new DTOMostarSubastas(
+                        iniciarSubasta.getId(),
+                        iniciarSubasta.getIdProducto(),
+                        iniciarSubasta.getNombre(),
+                        iniciarSubasta.getCategoria(),
+                        iniciarSubasta.getDescripcion(),
+                        iniciarSubasta.getPrecioInicial(),
+                        iniciarSubasta.getHoraInicio(),
+                        iniciarSubasta.getEstadoProducto(),
+                        iniciarSubasta.getDuracionSubasta(),
+                        iniciarSubasta.getNombreUsuario()
+                ))
+                .orElseThrow(() -> new PeticionInvalidoException("Producto con ID " + id + " no encontrado"));
+    }
+
 
 
     // Método para obtener el token de admin
