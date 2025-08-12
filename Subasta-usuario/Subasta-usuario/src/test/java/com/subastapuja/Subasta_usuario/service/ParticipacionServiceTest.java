@@ -11,6 +11,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 
 import java.math.BigDecimal;
@@ -21,6 +23,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 
+@SpringBootTest
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class ParticipacionServiceTest {
 
