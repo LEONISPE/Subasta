@@ -30,8 +30,8 @@ jobs:
           cache: maven
 
       - name: Build only Usuario microservice
-        run: mvn -B -pl Subasta-usuario clean test
-      
+        run: mvn -B -pl Subasta-usuario/Subasta-usuario clean test
+
 
 
       # Optional: Upload dependency graph for Dependabot
