@@ -1,12 +1,11 @@
 
-FROM maven:3.9.6-eclipse-temurin-21 AS builder
-WORKDIR /build
-COPY ../.. .
-RUN mvn -B -ntp clean package -DskipTests -pl Subasta-service/Subasta-service -am
-
-
 FROM eclipse-temurin:21-jre
+
 WORKDIR /app
-COPY --from=builder /build/Subasta-service/Subasta-service/target/*.jar app.jar
+
+# Copia solo el JAR ya compilado (esto es mucho más rápido)
+COPY target/*.jar app.jar
+
 EXPOSE 8085
+
 ENTRYPOINT ["java", "-jar", "app.jar"]

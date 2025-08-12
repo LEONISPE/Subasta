@@ -83,11 +83,31 @@ services:
         MYSQL_PASSWORD: 1234
         MYSQL_ROOT_PASSWORD: root
       ports:
-        - 3309:3306
+        - 3312:3306
       expose:
         - 3306
       networks:
         - subasta-net
+
+
+  db-usuario:
+     container_name: db-usuario
+     image: mysql:8.0.33
+     restart: unless-stopped
+     environment:
+      MYSQL_DATABASE: DBusuario
+      MYSQL_USER: Leonispe
+      MYSQL_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: root
+     ports:
+          - 3315:3306
+     expose:
+          - 3306
+     networks:
+          - subasta-net
+
+
+
 
 
 
@@ -134,28 +154,31 @@ services:
 
 
   keycloak:
-      container_name: keycloak
-      image: quay.io/keycloak/keycloak:21.0.2
-      command: [ "start-dev" ]
-      ports:
-        - 8181:8181
-      expose:
-        - 8181
-      depends_on:
-        - db-keycloak
-      environment:
-        DB_VENDOR: mysql
-        DB_ADDR: db-keycloak
-        DB_DATABASE: db_keycloak
-        DB_PORT: 3306
-        DB_USER: Leonispe
-        DB_PASSWORD: 1234
-        KEYCLOAK_ADMIN: admin
-        KEYCLOAK_ADMIN_PASSWORD: admin
-        KC_HTTP_PORT: 8181
-      networks:
-        - subasta-net
-
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:21.0.2
+    command: [ "start-dev" ]
+    ports:
+      - 8181:8181
+    expose:
+      - 8181
+    depends_on:
+      - db-keycloak
+    environment:
+      DB_VENDOR: mysql
+      DB_ADDR: db-keycloak
+      DB_DATABASE: db_keycloak
+      DB_PORT: 3306
+      DB_USER: Leonispe
+      DB_PASSWORD: 1234
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HTTP_PORT: 8181
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME: localhost
+    networks:
+      - subasta-net
+    volumes:
+      - "C:/Users/juanc/.m2:/root/.m2"
 
 
 
@@ -237,19 +260,17 @@ services:
 
   subasta-service:
     build:
-      context: .
-      dockerfile: Subasta-service/Subasta-service/Dockerfile-service
+      context: ./Subasta-service/Subasta-service
+      dockerfile: Dockerfile-service
     ports:
       - "8085:8085"
     networks:
       - subasta-net
     volumes:
-      - ~/.m2:/root/.m2
+      - "C:/Users/juanc/.m2:/root/.m2"
     depends_on:
       db-service:
         condition: service_healthy
-
-
 
 
 
