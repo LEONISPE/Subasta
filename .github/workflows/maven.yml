@@ -29,8 +29,10 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build and run tests
-        run: mvn -B clean verify --file pom.xml
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
 
-      - name: Update dependency graph (optional)
+      # Optional: Upload dependency graph for Dependabot
+      - name: Update dependency graph
         uses: advanced-security/maven-dependency-submission-action@v4
+
