@@ -11,7 +11,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 
 import java.math.BigDecimal;
 
@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
 
 @ExtendWith(MockitoExtension.class)
 class ParticipacionServiceTest {
@@ -35,7 +36,7 @@ class ParticipacionServiceTest {
     void setUp() {
         dto = new DTOParticipacionSubasta();
         dto.setMejorPostor("juan perez");
-        dto.setPrecioActual(BigDecimal.valueOf(1200.00)); // Precio alto para probar valoración
+        dto.setPrecioActual(BigDecimal.valueOf(1200.00));
     }
 
     @Test
@@ -52,7 +53,7 @@ class ParticipacionServiceTest {
         assertEquals("juan perez", guardada.getMejorPostor());
         assertEquals(BigDecimal.valueOf(1200.00), guardada.getPrecioActual());
         assertEquals(
-                ValoracionParticipacion.C3, // Lo que esperas según tu lógica de clasificación
+                ValoracionParticipacion.C3,
                 guardada.getValoracionParticipacion()
         );
     }
