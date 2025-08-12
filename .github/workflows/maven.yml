@@ -31,6 +31,7 @@ jobs:
 
       - name: Build only Usuario microservice
         run: mvn -B package --file Subasta-usuario/pom.xml
+      
 
       # Optional: Upload dependency graph for Dependabot
       - name: Update dependency graph
