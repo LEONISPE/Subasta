@@ -1,9 +1,6 @@
 package com.subastapuja.service;
 
-import com.subastapuja.model.DTOApuntarsePuja;
-import com.subastapuja.model.DTOFuturasSubastas;
-import com.subastapuja.model.DTOiniciarSubasta;
-import com.subastapuja.model.DTOpuja;
+import com.subastapuja.model.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,4 +17,7 @@ DTOApuntarsePuja apuntarsePuja(String idProducto, BigDecimal nuevoPrecio, String
 void cerrarSubastasFinalizadas();
 void  guardarSubastasaFuturo(DTOFuturasSubastas dtoFuturasSubastas);
 List<DTOFuturasSubastas> mostrarFuturasSubatsas();
+    DTOMarcarsubastasPreferidas marcarSubastaFavorita(String idProducto, String nombreUsuario);
+    List<Puja> obtenerFavoritas(String nombreUsuario);
+    DTOComentarios EnviarComentariosaProducto(DTOComentarios dtoComentarios);
 }

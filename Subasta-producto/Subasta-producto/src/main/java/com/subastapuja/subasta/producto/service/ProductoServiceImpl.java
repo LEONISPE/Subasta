@@ -1,9 +1,9 @@
 package com.subastapuja.subasta.producto.service;
 
+import com.subastapuja.subasta.producto.config.ConsumerProducto;
 import com.subastapuja.subasta.producto.excepcions.ProductoInvalidoException;
-import com.subastapuja.subasta.producto.model.DTOaddProducto;
-import com.subastapuja.subasta.producto.model.DTOmostrarProducto;
-import com.subastapuja.subasta.producto.model.Producto;
+import com.subastapuja.subasta.producto.model.*;
+import com.subastapuja.subasta.producto.repository.ComentariosRepository;
 import com.subastapuja.subasta.producto.repository.ProductoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +15,8 @@ import java.util.List;
 public class ProductoServiceImpl  implements ProductoService{
 
     private final ProductoRepository productoRepository;
+    private final ComentariosRepository comentariosRepository;
+    private final ConsumerProducto consumerProducto;
 
 @Override
     public DTOaddProducto addProducto(DTOaddProducto dtOaddProducto) {
@@ -59,5 +61,41 @@ public class ProductoServiceImpl  implements ProductoService{
                 ))
                 .orElseThrow(() -> new ProductoInvalidoException("Producto con ID " + id + " no encontrado"));
     }
+
+    @Override
+    public DTOComentarios guardarcomentariosdesdePuja(DTOComentarios dtoComentarios) {
+    DTOComentarios dto = new DTOComentarios();
+    dto.setProductoId(dtoComentarios.getProductoId());
+    dto.setMensaje(dtoComentarios.getMensaje());
+    dto.setUsuarioId(dtoComentarios.getUsuarioId());
+    dto.setRespuesta(dtoComentarios.getRespuesta());
+    dto.setFechaCreacion(dtoComentarios.getFechaCreacion());
+
+    Comentarios comentarios = new Comentarios();
+    comentarios.setProductoId(dtoComentarios.getProductoId());
+    comentarios.setMensaje(dtoComentarios.getMensaje());
+    comentarios.setUsuarioId(dtoComentarios.getUsuarioId());
+    comentarios.setRespuesta(dtoComentarios.getRespuesta());
+    comentarios.setFechaCreacion(dtoComentarios.getFechaCreacion());
+
+    comentariosRepository.save(comentarios);
+    consumerProducto.consumirComentarios(dtoComentarios);
+
+    return dto;
+    }
+
+    @Override
+    public DTOComentarios getComentariosPorId(String id) {
+     return comentariosRepository.findById(id)
+             .map(comentarios -> new DTOComentarios(
+                     comentarios.getProductoId(),
+                     comentarios.getUsuarioId(),
+                     comentarios.getMensaje(),
+                     comentarios.getRespuesta(),
+                     comentarios.getFechaCreacion()
+             ))
+             .orElseThrow(() -> new ProductoInvalidoException("comentario con ID " + id + " no encontrado"));
+    }
+
     }
 

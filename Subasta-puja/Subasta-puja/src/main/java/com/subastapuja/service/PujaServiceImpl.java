@@ -4,6 +4,7 @@ import com.subastapuja.excepcions.PeticionInvalidoException;
 import com.subastapuja.kafkaproducer.SubastaProducer;
 import com.subastapuja.model.*;
 import com.subastapuja.repository.PujaRepository;
+import com.subastapuja.repository.SubastaFavoritaRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,6 +25,7 @@ public class PujaServiceImpl  implements PujaService {
 
 
     private final PujaRepository pujaRepository;
+    private final SubastaFavoritaRepository subastaFavoritaRepository;
     private final SubastaProducer subastaProducer;
     private static final Logger logger = LoggerFactory.getLogger(PujaServiceImpl.class);
 
@@ -202,6 +204,48 @@ public class PujaServiceImpl  implements PujaService {
 
         return new DTOApuntarsePuja(idProducto, nuevoPrecio, mejorPostor);
     }
+
+    @Override
+    public DTOMarcarsubastasPreferidas marcarSubastaFavorita(String idProducto, String nombreUsuario) {
+        Puja puja = pujaRepository.findByIdProducto(idProducto)
+                .orElseThrow(() -> new PeticionInvalidoException("No existe esa puja con el idProducto: " + idProducto));
+
+        SubastaFavorita favorita = new SubastaFavorita();
+        favorita.setNombreUsuario(nombreUsuario);
+        favorita.setPuja(puja);
+
+        subastaFavoritaRepository.save(favorita);
+
+        logger.info("Subasta marcada como favorita para usuario: {}", nombreUsuario);
+
+        return new DTOMarcarsubastasPreferidas(idProducto, nombreUsuario);
+    }
+
+    @Override
+    public List<Puja> obtenerFavoritas(String nombreUsuario) {
+        return subastaFavoritaRepository.findPujasFavoritasByNombreUsuario(nombreUsuario);
+    }
+
+    @Override
+    public DTOComentarios EnviarComentariosaProducto(DTOComentarios dtoComentarios) {
+     Puja puja = pujaRepository.findByIdProducto(dtoComentarios.getProductoId())
+             .orElseThrow(() -> new PeticionInvalidoException("No existe esa puja con el idProducto: " + dtoComentarios.getProductoId()));
+
+          subastaProducer.sendComentarios(dtoComentarios);
+        logger.info("Comentario guardado : {}", dtoComentarios.getMensaje());
+
+        String duenioSubasta = puja.getNombreUsuario();
+
+        NotificacionDuenoSubastaDTO dtoDueno = new NotificacionDuenoSubastaDTO();
+        dtoDueno.setDestinatario(duenioSubasta);
+        dtoDueno.setMensaje("Un nuevo comentario se ha hecho  en tu subasta:" +
+                " " + dtoComentarios.getProductoId() + "con el siguiente comentario " + dtoComentarios.getMensaje());
+        subastaProducer.sendNotificacionDueno(dtoDueno);
+
+        return dtoComentarios;
+
+    }
+
 
     @Scheduled(fixedRate = 60000)
     public void cerrarSubastasFinalizadas() {

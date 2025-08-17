@@ -21,4 +21,5 @@ public interface PujaRepository  extends JpaRepository<Puja, Long> {
     List<Puja> findByEstadoSubasta(EstadoSubasta estado);
 
 
+    String id(Long id);
 }

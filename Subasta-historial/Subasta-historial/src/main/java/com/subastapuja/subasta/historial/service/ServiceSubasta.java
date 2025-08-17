@@ -1,9 +1,6 @@
 package com.subastapuja.subasta.historial.service;
 
-import com.subastapuja.subasta.historial.model.DTOHistorialSubasta;
-import com.subastapuja.subasta.historial.model.DTOPujaActualizada;
-import com.subastapuja.subasta.historial.model.DTOSubastaFinalizadas;
-import com.subastapuja.subasta.historial.model.DTOiniciarSubasta;
+import com.subastapuja.subasta.historial.model.*;
 
 import java.util.List;
 
@@ -13,5 +10,5 @@ public interface ServiceSubasta {
     void guardarHistorialDesdeSubastaIniciada(DTOiniciarSubasta dtoiniciarSubasta);
 void actualizarHistorialConPuja(DTOPujaActualizada dtoPujaActualizada);
     void  finalizarSubastas(DTOSubastaFinalizadas dto);
-
+    List<DTOMarcarsubastasPreferidas> obtenerSubastasPreferidasByUsuario(String nombreUsuario);
 }

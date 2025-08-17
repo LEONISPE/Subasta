@@ -2,6 +2,7 @@ package com.subastapuja.subasta.historial.service;
 
 import com.subastapuja.subasta.historial.model.*;
 import com.subastapuja.subasta.historial.repository.HistorialSubastasRepository;
+import com.subastapuja.subasta.historial.repository.MarcarSubastaPreferidaRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ public class ServiceSubastaImpl implements ServiceSubasta {
 
 
     private final HistorialSubastasRepository historialSubastasRepository;
+    private final MarcarSubastaPreferidaRepository marcarSubastaPreferidaRepository;
     private static final Logger logger = LoggerFactory.getLogger(ServiceSubastaImpl.class);
 
     @Override
@@ -102,6 +104,42 @@ public void  finalizarSubastas(DTOSubastaFinalizadas dto){
        historialPuja.setIdProducto(dtoSubastaFinalizadas.getIdProducto());
        historialPuja.setEstadoSubasta(dtoSubastaFinalizadas.getEstadoSubasta());
        historialSubastasRepository.save(historialPuja);
+}
+
+public void actualizarSubastaPreferida(DTOPujaActualizada dtoPujaActualizada) {
+
+    DTOPujaActualizada dtpujaActualizada = new DTOPujaActualizada();
+
+    dtoPujaActualizada.setIdProducto(dtpujaActualizada.getIdProducto());
+    dtoPujaActualizada.setPrecioActual(dtpujaActualizada.getPrecioActual());
+    dtoPujaActualizada.setMejorPostor(dtpujaActualizada.getMejorPostor());
+
+    MarcarSubastaPreferida marcarSubastaPreferida = new MarcarSubastaPreferida();
+    marcarSubastaPreferida.setIdProducto(dtpujaActualizada.getIdProducto());
+    marcarSubastaPreferida.setPrecioActual(dtpujaActualizada.getPrecioActual());
+    marcarSubastaPreferida.setMejorPostor(dtpujaActualizada.getMejorPostor());
+    marcarSubastaPreferidaRepository.save(marcarSubastaPreferida);
+}
+
+
+@Override
+public  List<DTOMarcarsubastasPreferidas> obtenerSubastasPreferidasByUsuario(String nombreUsuario){
+     return marcarSubastaPreferidaRepository.findByNombreUsuario(nombreUsuario)
+             .stream()
+             .map(marcarSubastaPreferida -> new DTOMarcarsubastasPreferidas(
+                     marcarSubastaPreferida.getIdProducto(),
+                     marcarSubastaPreferida.getNombreUsuario(),
+                     marcarSubastaPreferida.getNombre(),
+                     marcarSubastaPreferida.getCategoria(),
+                     marcarSubastaPreferida.getDescripcion(),
+                     marcarSubastaPreferida.getPrecioInicial(),
+                     marcarSubastaPreferida.getHoraInicio(),
+                     marcarSubastaPreferida.getEstadoSubasta(),
+                     marcarSubastaPreferida.getEstadoProducto(),
+                     marcarSubastaPreferida.getDuracionSubasta(),
+                     marcarSubastaPreferida.getPrecioActual(),
+                     marcarSubastaPreferida.getMejorPostor()
+             )).toList();
 }
 
 

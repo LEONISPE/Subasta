@@ -1,6 +1,5 @@
 package com.subastapuja.subasta.historial.config;
 
-import com.subastapuja.subasta.historial.controller.ControllerHistorial;
 import com.subastapuja.subasta.historial.model.DTOPujaActualizada;
 import com.subastapuja.subasta.historial.model.DTOSubastaFinalizadas;
 import com.subastapuja.subasta.historial.model.DTOiniciarSubasta;
@@ -46,4 +45,5 @@ public class ConsumerHistorial {
 public void consumirFinalisacionEstadoPujas(DTOSubastaFinalizadas dto){
         serviceSubasta.finalizarSubastas(dto);
 }
+
 }

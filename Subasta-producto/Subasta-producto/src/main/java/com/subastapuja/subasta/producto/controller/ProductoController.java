@@ -1,5 +1,6 @@
 package com.subastapuja.subasta.producto.controller;
 
+import com.subastapuja.subasta.producto.model.DTOComentarios;
 import com.subastapuja.subasta.producto.model.DTOaddProducto;
 import com.subastapuja.subasta.producto.model.DTOmostrarProducto;
 import com.subastapuja.subasta.producto.service.ProductoServiceImpl;
@@ -47,5 +48,11 @@ public class ProductoController {
     public ResponseEntity<DTOmostrarProducto> mostrarProductoPorId(@PathVariable String id) {
         DTOmostrarProducto producto = productoService.getProductoPorId(id);
         return ResponseEntity.ok().body(producto);
+    }
+
+    @GetMapping("/mostrar-comentarios/{productoId}")
+    public ResponseEntity<DTOComentarios> mostrarComentarios(@PathVariable String productoId) {
+       DTOComentarios comentarios = productoService.getComentariosPorId(productoId);
+       return ResponseEntity.ok().body(comentarios);
     }
 }

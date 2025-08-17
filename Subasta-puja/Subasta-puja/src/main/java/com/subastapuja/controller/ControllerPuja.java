@@ -1,8 +1,6 @@
 package com.subastapuja.controller;
 
-import com.subastapuja.model.DTOApuntarsePuja;
-import com.subastapuja.model.DTOFuturasSubastas;
-import com.subastapuja.model.DTOpuja;
+import com.subastapuja.model.*;
 import com.subastapuja.service.PujaServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -64,4 +63,44 @@ public class ControllerPuja {
         List<DTOFuturasSubastas> mostrarFuturasPujas = pujaService.mostrarFuturasSubatsas();
         return ResponseEntity.ok(mostrarFuturasPujas);
     }
-}
+    @PostMapping("/pujas/subastas-preferidas")
+    public ResponseEntity<DTOMarcarsubastasPreferidas> marcarSubastasPreferidas(
+            @RequestBody DTOMarcarsubastasPreferidas dto,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        String nombreUsuario = jwt.getClaimAsString("name");
+
+        DTOMarcarsubastasPreferidas response = pujaService.marcarSubastaFavorita(
+                dto.getIdProducto(),
+                nombreUsuario
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/pujas/subastas-preferidas")
+    public ResponseEntity<List<Puja>> obtenerSubastasPreferidas(@AuthenticationPrincipal Jwt jwt) {
+        String nombreUsuario = jwt.getClaimAsString("name");
+        List<Puja> favoritas = pujaService.obtenerFavoritas(nombreUsuario);
+        return ResponseEntity.ok(favoritas);
+    }
+
+    @PostMapping("/pujas/guardar-comentarios")
+    public ResponseEntity<DTOComentarios> guardarComentarios(
+            @RequestBody DTOComentarios dtoComentarios,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        // 1. Asignamos el usuario autenticado
+        String nombreUsuario = jwt.getClaimAsString("name");
+        dtoComentarios.setUsuarioId(nombreUsuario);
+
+        // 2. Asignamos la fecha actual
+        dtoComentarios.setFechaCreacion(LocalDateTime.now());
+
+        // 3. Pasamos el dto completo al servicio
+        DTOComentarios respuesta = pujaService.EnviarComentariosaProducto(dtoComentarios);
+
+        return ResponseEntity.ok(respuesta);
+    }
+
+    }

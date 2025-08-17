@@ -27,6 +27,11 @@ public class SubastaProducer {
     }
 
     public void sendParticipacionSubasta(DTOParticipacionSubasta dtoParticipacionSubasta){
+        System.out.println("enviando participacion de subasta" +dtoParticipacionSubasta);
         kafkaTemplate.send("participacion-topic", dtoParticipacionSubasta);
     }
+    public void sendComentarios(DTOComentarios dtoComentarios){
+        kafkaTemplate.send("Comentarios", dtoComentarios);
+    }
+
 }

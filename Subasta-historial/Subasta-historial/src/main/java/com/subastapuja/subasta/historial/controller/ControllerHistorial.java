@@ -37,4 +37,12 @@ public class ControllerHistorial {
        logger.info("resultados encontrados {} : ", dtoHistorialSubastas.size());
         return ResponseEntity.ok().body(dtoHistorialSubastas);
     }
+
+    @GetMapping("/subastas-preferidas")
+    public ResponseEntity<List<DTOMarcarsubastasPreferidas>> subastasPreferidas(@AuthenticationPrincipal Jwt jwt) {
+        String nombreUsuario = jwt.getClaimAsString("preferred_username");
+        List<DTOMarcarsubastasPreferidas> dtoMarcarsubastasPreferidas = serviceSubasta.obtenerSubastasPreferidasByUsuario(nombreUsuario);
+        return ResponseEntity.ok().body(dtoMarcarsubastasPreferidas);
+    }
+
 }

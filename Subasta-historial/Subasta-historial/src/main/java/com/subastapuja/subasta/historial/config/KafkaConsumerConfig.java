@@ -83,4 +83,6 @@ public class KafkaConsumerConfig {
         factory.setConsumerFactory(SubastasFinalizadasConsumerFactory());
         return factory;
     }
+
+
 }

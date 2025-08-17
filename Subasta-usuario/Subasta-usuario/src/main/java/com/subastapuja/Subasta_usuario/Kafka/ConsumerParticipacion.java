@@ -3,7 +3,9 @@ package com.subastapuja.Subasta_usuario.Kafka;
 import com.subastapuja.Subasta_usuario.model.DTO.DTOParticipacionSubasta;
 import com.subastapuja.Subasta_usuario.service.ParticipacionService;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ConsumerParticipacion {
 
     private final ParticipacionService participacionService;
@@ -19,6 +21,7 @@ public class ConsumerParticipacion {
 
     )
     public void consumeParticipacion(DTOParticipacionSubasta dtoParticipacion) {
+        System.out.println("recibiendo participacion subatsa "+dtoParticipacion);
         participacionService.guardarParticipacionSubasta(dtoParticipacion);
     }
 }
